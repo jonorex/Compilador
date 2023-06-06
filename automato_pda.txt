@@ -5,7 +5,7 @@ q1, id, q4, token, igual, emp, IDENTIFICADOR, 0
 q1, FOR, q5, token, igual, manter, manter, 0
 q1, RETURN, q41, token, igual, verifica, FUN, 0
 q0, FUN, q20, token, igual, emp, FUN, 0
-q2, id, q4, token, igual, manter, manter, 0
+q2, id, q59, token, igual, manter, manter, 0
 q4, IGUAL, q11, token, igual, manter, manter, 0
 q4, num, q14, token, igual, manter, manter, 0
 q4, ABRE_P, q48, token, igual, emp, ABRE_P,0
@@ -104,3 +104,24 @@ q50, id, q49, token, igual, emp, IDENTIFICADOR, 0
 q50, num, q49, token, igual, manter, manter, 0
 q50, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q48, FECHA_P, q49, token, igual, desemp, ABRE_P, 0
+q59, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
+q59, IGUAL, q60, token, igual, manter, manter, 0
+q60, ABRE_P, q64, token, igual, emp, ABRE_P,0
+q60, id, q61, token, igual, manter, manter, 0
+q60, num, q61, token, igual, manter, manter, 0
+q61, FECHA_P, q61, token, igual, desemp, ABRE_P, 0
+q61, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
+q61, op, q63, tipo, igual, manter, manter, 0
+q61, ABRE_P, q64, token, igual, emp, ABRE_P,0
+q63, id, q61, token, igual, manter, manter, 0
+q63, num, q61, token, igual, manter, manter, 0
+q63, ABRE_P, q64, token, igual, emp, ABRE_P,0
+q64, ABRE_P, q64, token, igual, emp, ABRE_P, 0
+q64, FECHA_P, q61, token, igual, desemp, ABRE_P, 0
+q64, id, q65, token, igual, manter, manter, 0
+q64, num, q65, token, igual, manter, manter, 0
+q65, FECHA_P, q61, token, igual, desemp, ABRE_P, 0
+q65, op, q63, tipo, igual, manter, manter, 0
+q65, id, q61, token, igual, manter, manter, 0
+q65, num, q61, token, igual, manter, manter, 0
+q65, ABRE_P, q64, token, igual, emp, ABRE_P, 0

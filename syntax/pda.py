@@ -49,7 +49,7 @@ class Pda:
         elif(campo_analisado == TOKEN and condicao == IGUAL):
             if token.token == transicao.palavra_chave or transicao.palavra_chave == "": 
                 if self.mod_pilha(transicao):
-                    print("passou aqui")
+                    #print("passou aqui")
                     self.estadoAtual = transicao.estado_final
                     return True
                 else: return False
@@ -66,23 +66,23 @@ class Pda:
         
     def mod_pilha(self, transicao):
         if transicao.op_pilha == MANTER:
-            print("CASO 1")
+            #print("CASO 1")
             return True
         if transicao.op_pilha == EMPILHAR:
             if eDelimitador(transicao.palavra_chave) != False:
                 self.pilha.append(transicao.alteracao_pilha)
-                print("CASO 2")
+                #print("CASO 2")
                 return True
             else:
-                print(transicao.alteracao_pilha)
-                print("CASO 3")
+                #print(transicao.alteracao_pilha)
+                #print("CASO 3")
                 self.pilha.append(transicao.alteracao_pilha)
                 return True
         elif transicao.op_pilha == DESEMPILHAR and len(self.pilha) > 0:
             if eDelimitador(transicao.palavra_chave) != False:
                 if(len(self.pilha) > 0 and self.pilha[-1] == transicao.alteracao_pilha):
-                    print("transicao.alteracao_pilha ==", transicao.alteracao_pilha)
-                    print("CASO 4")
+                    #print("transicao.alteracao_pilha ==", transicao.alteracao_pilha)
+                    #print("CASO 4")
                     self.pilha.pop()
                     return True
                 elif transicao.alteracao_pilha == "IF" and self.pilha[-1] != "IF":
@@ -90,7 +90,7 @@ class Pda:
             elif eDelimitador(transicao.palavra_chave) == False:
                 if(len(self.pilha) > 0 and self.pilha[-1] == transicao.alteracao_pilha):
                     self.pilha.pop()
-                    print("CASO 5")
+                    #print("CASO 5")
                     return True
             return False
         elif transicao.op_pilha == VER_TOPO:
@@ -98,7 +98,7 @@ class Pda:
             
             if transicao.alteracao_pilha == ['IDENTIFICADOR', ' ABRE_P']:
                 if(len(self.pilha) >  0  and  self.pilha[-1] == transicao.alteracao_pilha[-1].strip() and  self.pilha[-2] == transicao.alteracao_pilha[-2].strip()):
-                    print("linha ",self.pilha[-2])
+                    #print("linha ",self.pilha[-2])
                     del self.pilha[-2]
                     return True
             if(len(self.pilha) >  0  and  self.pilha[-1] == transicao.alteracao_pilha):
@@ -131,7 +131,7 @@ class Pda:
                         print(self.estadoAtual)
                         if transicao.consumir == True:
                             #pass
-                            print("passou aqui")
+                            #print("passou aqui")
                             i = i-1
                         break
             if not v:
@@ -139,10 +139,10 @@ class Pda:
 
             i = i+1
         
-        print(len(self.pilha))
+        #print(len(self.pilha))
 
-        for p in self.pilha:
-            print(p)
+        #for p in self.pilha:
+            #print(p)
 
         if v:
             while( len(self.pilha) > 0 and (self.pilha[-1] == "FUN" or self.pilha[-1] == "IF" or self.pilha[-1] == TOKEN_ID.token)):

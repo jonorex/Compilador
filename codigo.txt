@@ -1,6 +1,5 @@
 
-fun main(){
-    int s(a);
-}
+    int s = 2(5+2);
+
 
     
