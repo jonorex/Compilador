@@ -1,0 +1,6 @@
+
+fun main(){
+    int s(a);
+}
+
+    
