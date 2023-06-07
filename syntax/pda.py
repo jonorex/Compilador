@@ -96,11 +96,13 @@ class Pda:
         elif transicao.op_pilha == VER_TOPO:
             #print("linha 98 ", )
             
-            if transicao.alteracao_pilha == ['IDENTIFICADOR', ' ABRE_P']:
-                if(len(self.pilha) >  0  and  self.pilha[-1] == transicao.alteracao_pilha[-1].strip() and  self.pilha[-2] == transicao.alteracao_pilha[-2].strip()):
-                    #print("linha ",self.pilha[-2])
-                    del self.pilha[-2]
-                    return True
+            if len(transicao.alteracao_pilha) == 2:
+                if len(self.pilha) >  1:
+                    if(self.pilha[-1] == transicao.alteracao_pilha[-1].strip() 
+                       and  self.pilha[-2] == transicao.alteracao_pilha[-2].strip()):
+                        #print("linha ",self.pilha[-2])
+                        del self.pilha[-2]
+                        return True
             if(len(self.pilha) >  0  and  self.pilha[-1] == transicao.alteracao_pilha):
                 
                 return True
@@ -111,6 +113,10 @@ class Pda:
                 if p == transicao.alteracao_pilha:
                     return True
             return False
+        elif transicao.op_pilha == PILHA_VAZIA:
+            if len(self.pilha) == 0:
+                return True
+            else: return False
         else: return False
 
     def parser(self, tokenList):
@@ -141,8 +147,8 @@ class Pda:
         
         #print(len(self.pilha))
 
-        #for p in self.pilha:
-            #print(p)
+        for p in self.pilha:
+            print(p)
 
         if v:
             while( len(self.pilha) > 0 and (self.pilha[-1] == "FUN" or self.pilha[-1] == "IF" or self.pilha[-1] == TOKEN_ID.token)):

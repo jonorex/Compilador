@@ -3,7 +3,7 @@ from token_1 import Token
 EMPILHAR = "emp"
 DESEMPILHAR = "desemp"
 MANTER = "manter"
-PILHA_VAZIA = []
+PILHA_VAZIA = "pilha_vazia"
 VER_TOPO = "ver_topo"
 
 TOKEN_NUMERO = Token(chave="", token="NUMERO", tipo="")

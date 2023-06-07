@@ -1,5 +1,15 @@
+int a = soma(a,b);
 
-    int s = 2(5+2);
+fun main(int a, char b)->int{
+    if(a > b) {
+        a = c;
+    } else if(a==b) {
+        a = b;
+    } else {
+        a=6;
+    }
+}
 
-
-    
+fun soma(int a, int b)->int{
+        return a+b;
+}
