@@ -66,6 +66,10 @@ for linha in linhas:
         c5 = DESEMPILHAR
     elif c5 == "verifica":
         c5 = VER_TOPO
+    elif c5 == "verEmp":
+        c5 = VERIFICA_E_EMPILHA
+    elif c5 == "verTopoDesempEmp":
+        c5 = VERIFICA_DESEMPILHA_EMPILHA
 
 
 

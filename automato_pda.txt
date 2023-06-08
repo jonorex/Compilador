@@ -61,7 +61,7 @@ q51, num, q49, token, igual, manter, manter, 0
 q49, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q51, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q1, IF, q52, token, igual, emp, IF, 0
-q1, WHILE, q52, token, igual, manter, manter, 0
+q1, WHILE, q52, token, igual, emp, WHILE, 0
 q27, IF, q52, token, igual, emp, IF, 0
 q26, FUN, q0, token, igual, verifica, FUN, 1
 q1, FECHA_CHAVE, q26, token, igual, desemp, ABRE_CHAVE, 0
@@ -74,28 +74,8 @@ q50, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q48, FECHA_P, q49, token, igual, desemp, ABRE_P, 0
 q59, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q59, IGUAL, q11, token, igual, manter, manter, 0
-q52, ABRE_P, q66, token, igual, emp, ABRE_P,0
-q66, id, q71, token, igual, emp, IDENTIFICADOR, 0
-q66, num, q71, token, igual, manter, manter, 0
-q66, ABRE_P, q67, token, igual, emp, ABRE_P,0
-q67, id, q68, token, igual, emp, IDENTIFICADOR, 0
-q67, num, q68, token, igual, manter, manter, 0
-q67, ABRE_P, q67, token, igual, emp, ABRE_P, 0
-q67, FECHA_P, q71, token, igual, desemp, ABRE_P, 0
-q68, FECHA_P, q71, token, igual, desemp, ABRE_P, 0
-q68, op, q70, tipo, igual, manter, manter, 0
-q68, VIRGULA, q69, token, igual, verifica, IDENTIFICADOR. ABRE_P, 0 
-q68, id, q71, token, igual, emp, IDENTIFICADOR, 0
-q68, num, q71, token, igual, manter, manter, 0
-q68, ABRE_P, q67, token, igual, emp, ABRE_P, 0
-q69, id, q68, token, igual, emp, IDENTIFICADOR, 0
-q69, num, q68, token, igual, manter, manter, 0
-q70, id, q71, token, igual, emp, IDENTIFICADOR, 0
-q70, num, q71, token, igual, manter, manter, 0
-q70, ABRE_P, q67, token, igual, emp, ABRE_P, 0
-q71, ABRE_P, q67, token, igual, emp, ABRE_P, 0
-q71, FECHA_P, q71, token, igual, desemp, ABRE_P, 0
-q71, op, q70, tipo, igual, manter, manter, 0
-q71, ABRE_CHAVE, q1, token, igual, emp, ABRE_CHAVE, 0
+q52, ABRE_P, q11, token, igual, emp, ABRE_P,0
 q24, FLEXA, q72, token, igual, manter, manter,0
 q72, tipo, q73, tipo, igual, manter, manter, 0
+q49, ABRE_CHAVE, q1, token, igual, verEmp,IF.ABRE_CHAVE, 0
+q49, ABRE_CHAVE, q1, token, igual, verTopoDesempEmp,WHILE.ABRE_CHAVE, 0

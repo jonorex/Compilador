@@ -63,6 +63,7 @@ DOIS_PONTOS = Token(chave=":", token="DOIS_PONTOS", tipo=OP)
 DOIS_PONTOS = Token(chave=":", token="DOIS_PONTOS", tipo=DELIMITADOR)
 ASPAS = Token(chave='"', token="ASPAS", tipo=DELIMITADOR)
 ASPAS_SIMPLES = Token(chave="'", token="ASPAS_SIMPLES", tipo=DELIMITADOR)
+COMPLETE = Token(chave="¬", token="COMPLETE", tipo=DELIMITADOR)
 
 
 tokenList.append(IF)
@@ -117,10 +118,4 @@ tokenList.append(FLEXA)
 tokenList.append(DOIS_PONTOS)
 tokenList.append(ASPAS)
 tokenList.append(ASPAS_SIMPLES)
-
-
-
-
-
-
-#transicoes.append(Transicao())
+tokenList.append(COMPLETE)

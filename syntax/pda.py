@@ -49,7 +49,7 @@ class Pda:
         elif(campo_analisado == TOKEN and condicao == IGUAL):
             if token.token == transicao.palavra_chave or transicao.palavra_chave == "": 
                 if self.mod_pilha(transicao):
-                    #print("passou aqui")
+    
                     self.estadoAtual = transicao.estado_final
                     return True
                 else: return False
@@ -66,23 +66,17 @@ class Pda:
         
     def mod_pilha(self, transicao):
         if transicao.op_pilha == MANTER:
-            #print("CASO 1")
             return True
         if transicao.op_pilha == EMPILHAR:
             if eDelimitador(transicao.palavra_chave) != False:
                 self.pilha.append(transicao.alteracao_pilha)
-                #print("CASO 2")
                 return True
             else:
-                #print(transicao.alteracao_pilha)
-                #print("CASO 3")
                 self.pilha.append(transicao.alteracao_pilha)
                 return True
         elif transicao.op_pilha == DESEMPILHAR and len(self.pilha) > 0:
             if eDelimitador(transicao.palavra_chave) != False:
                 if(len(self.pilha) > 0 and self.pilha[-1] == transicao.alteracao_pilha):
-                    #print("transicao.alteracao_pilha ==", transicao.alteracao_pilha)
-                    #print("CASO 4")
                     self.pilha.pop()
                     return True
                 elif transicao.alteracao_pilha == "IF" and self.pilha[-1] != "IF":
@@ -90,17 +84,14 @@ class Pda:
             elif eDelimitador(transicao.palavra_chave) == False:
                 if(len(self.pilha) > 0 and self.pilha[-1] == transicao.alteracao_pilha):
                     self.pilha.pop()
-                    #print("CASO 5")
                     return True
             return False
         elif transicao.op_pilha == VER_TOPO:
-            #print("linha 98 ", )
             
             if len(transicao.alteracao_pilha) == 2:
                 if len(self.pilha) >  1:
                     if(self.pilha[-1] == transicao.alteracao_pilha[-1].strip() 
                        and  self.pilha[-2] == transicao.alteracao_pilha[-2].strip()):
-                        #print("linha ",self.pilha[-2])
                         del self.pilha[-2]
                         return True
             if(len(self.pilha) >  0  and  self.pilha[-1] == transicao.alteracao_pilha):
@@ -117,27 +108,36 @@ class Pda:
             if len(self.pilha) == 0:
                 return True
             else: return False
+        elif transicao.op_pilha == VERIFICA_E_EMPILHA:
+            token_verificar = transicao.alteracao_pilha[0]
+            token_empilhar = transicao.alteracao_pilha[1]
+            if len(self.pilha) > 0 and self.pilha[-1] == token_verificar:
+                self.pilha.append(token_empilhar)
+                return True
+            else: return False
+        elif transicao.op_pilha == VERIFICA_DESEMPILHA_EMPILHA:
+            token_verificar = transicao.alteracao_pilha[0]
+            token_empilhar = transicao.alteracao_pilha[1]
+            if len(self.pilha) > 0 and self.pilha[-1] == token_verificar:
+                self.pilha.pop()
+                self.pilha.append(token_empilhar)
+                return True
+            else: return False
         else: return False
 
     def parser(self, tokenList):
         s = len(tokenList)
-       # print(s)
         self.estadoAtual = "q0"
         i = 0
         while i < s:
-            #print(i)
-            #print(i)
             v = False
             for transicao in self.transicoes:
-                #print("passou aqui")
+
                 if transicao.estado_inicial == self.estadoAtual:
-                    #print(transicao)
                     if self.verificarTransicao(tokenList[i], transicao) == True:
                         v = True
                         print(self.estadoAtual)
                         if transicao.consumir == True:
-                            #pass
-                            #print("passou aqui")
                             i = i-1
                         break
             if not v:
@@ -145,8 +145,6 @@ class Pda:
 
             i = i+1
         
-        #print(len(self.pilha))
-
         for p in self.pilha:
             print(p)
 

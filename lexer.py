@@ -1,5 +1,6 @@
 from data import tokenList
 from consts import *
+import copy
 
 LEXICAL_VECTOR = []
 TOKENS = []
@@ -49,7 +50,7 @@ def isNumber(stri):
     else:
         return False
 
-def parse(code): 
+def parse(code, linha, coluna): 
     left = 0 
     right = 0
 
@@ -62,6 +63,8 @@ def parse(code):
             r = eDelimitador(code[right])
             t = eUnitario(code[right])
             if t != False:
+                t.linha = linha
+                t.coluna = coluna+left
                 LEXICAL_VECTOR.append(t)
             #elif r != False:
             #    LEXICAL_VECTOR.append(r)
@@ -72,11 +75,24 @@ def parse(code):
             sub = code[left : right]
             r = isKeyWord(sub)
             if r != False:
+                r.linha = linha
+                r.coluna = coluna+left
                 LEXICAL_VECTOR.append(r)
             elif isNumber(sub):
-                LEXICAL_VECTOR.append(TOKEN_NUMERO)
+                num = TOKEN_NUMERO
+                num.linha = linha
+                num.coluna = coluna+left
+                LEXICAL_VECTOR.append(num)
             elif validIdentifier(sub) == True and eUnitario(code[right-1]) == False:
-                LEXICAL_VECTOR.append(TOKEN_ID)
+                tId = copy.copy(TOKEN_ID) 
+                tId.linha = linha
+                tId.coluna = coluna + left
+                LEXICAL_VECTOR.append(tId)
+            elif validIdentifier(sub) == False and eUnitario(code[right-1]) == False:
+                tId = copy.copy(TOKEN_ID) 
+                tId.linha = linha
+                tId.coluna = coluna + left
+                LEXICAL_VECTOR.append(tId)
             left = right
     
     verificaOpComposto()
@@ -129,9 +145,9 @@ def printVetor():
     s = len(LEXICAL_VECTOR)
     print("-------Vetor de Tokens----------\n")
     for i in range(s):
-        if(LEXICAL_VECTOR[i] != TOKEN_NULO and LEXICAL_VECTOR[i].tipo != SPACE):
+        if(LEXICAL_VECTOR[i] != TOKEN_NULO and LEXICAL_VECTOR[i].tipo != SPACE and LEXICAL_VECTOR[i] != tokenList[-1]):
             TOKENS.append(LEXICAL_VECTOR[i])
-            print(LEXICAL_VECTOR[i].token)
+            print(LEXICAL_VECTOR[i])
 
 
                 
