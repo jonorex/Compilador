@@ -11,9 +11,8 @@ sys.path.append(parent)
 sys.path.append('../compiladorPython')
 
 from consts import *
-from lexer import eDelimitador
 from data import ABRE_P, VIRGULA
-
+STM_VECTOR = []
 class Pda:
     def __init__(self, estadoInicial, nEstados, estadosFinais, transicoes) -> None:
         self.estadoInicial = "q0"
@@ -28,12 +27,12 @@ class Pda:
         campo_analisado = transicao.campo_analisado
         condicao = transicao.condicao
 
-        if transicao.palavra_chave != ABRE_P.token and transicao.palavra_chave != VIRGULA.token and len(self.pilha) > 0 and self.pilha[-1] == TOKEN_ID.token:
+        if token.token != ABRE_P.token and token.token != VIRGULA.token and len(self.pilha) > 0 and self.pilha[-1].token == TOKEN_ID.token:
             self.pilha.pop()
 
         if(campo_analisado == TIPO and condicao == IGUAL):
             if token.tipo == transicao.palavra_chave:
-                if self.mod_pilha(transicao):
+                if self.mod_pilha(transicao, token):
                     self.estadoAtual = transicao.estado_final
                     return True
                 else: return False
@@ -41,22 +40,21 @@ class Pda:
                 return False
         elif(campo_analisado == TIPO and condicao == DIFERENTE):
             if token.tipo != transicao.palavra_chave:
-                if self.mod_pilha(transicao):
+                if self.mod_pilha(transicao, token):
                     self.estadoAtual = transicao.estado_final
                     return True
                 else: return False
             else: return False
         elif(campo_analisado == TOKEN and condicao == IGUAL):
             if token.token == transicao.palavra_chave or transicao.palavra_chave == "": 
-                if self.mod_pilha(transicao):
-    
+                if self.mod_pilha(transicao, token):
                     self.estadoAtual = transicao.estado_final
                     return True
                 else: return False
             else: return False
         elif(campo_analisado == TOKEN and condicao == DIFERENTE):
             if token.token != transicao.palavra_chave:
-                if self.mod_pilha(transicao):
+                if self.mod_pilha(transicao, token):
                     self.estadoAtual = transicao.estado_final
                     return True
                 else: return False
@@ -64,37 +62,32 @@ class Pda:
         else:
             return False
         
-    def mod_pilha(self, transicao):
+    def mod_pilha(self, transicao, token):
         if transicao.op_pilha == MANTER:
             return True
         if transicao.op_pilha == EMPILHAR:
-            if eDelimitador(transicao.palavra_chave) != False:
-                self.pilha.append(transicao.alteracao_pilha)
-                return True
-            else:
-                self.pilha.append(transicao.alteracao_pilha)
-                return True
+            self.pilha.append(token)
+            return True
         elif transicao.op_pilha == DESEMPILHAR and len(self.pilha) > 0:
-            if eDelimitador(transicao.palavra_chave) != False:
-                if(len(self.pilha) > 0 and self.pilha[-1] == transicao.alteracao_pilha):
-                    self.pilha.pop()
-                    return True
-                elif transicao.alteracao_pilha == "IF" and self.pilha[-1] != "IF":
-                    return True
-            elif eDelimitador(transicao.palavra_chave) == False:
-                if(len(self.pilha) > 0 and self.pilha[-1] == transicao.alteracao_pilha):
-                    self.pilha.pop()
-                    return True
+            if(len(self.pilha) > 0 and self.pilha[-1].token == transicao.alteracao_pilha):
+                STM_VECTOR.append(self.pilha[-1])
+                STM_VECTOR.append(token)
+                self.pilha.pop()
+                return True
+            elif transicao.alteracao_pilha == "IF" and self.pilha[-1].token != "IF":
+                return True
             return False
         elif transicao.op_pilha == VER_TOPO:
-            
             if len(transicao.alteracao_pilha) == 2:
                 if len(self.pilha) >  1:
-                    if(self.pilha[-1] == transicao.alteracao_pilha[-1].strip() 
-                       and  self.pilha[-2] == transicao.alteracao_pilha[-2].strip()):
+                    #print("linha 84 ",  )
+                    if(self.pilha[-1].token == transicao.alteracao_pilha[-1].strip() 
+                       and  self.pilha[-2].token == transicao.alteracao_pilha[-2].strip()):
+                        STM_VECTOR.append(self.pilha[-2])
                         del self.pilha[-2]
+                        
                         return True
-            if(len(self.pilha) >  0  and  self.pilha[-1] == transicao.alteracao_pilha):
+            if(len(self.pilha) >  0  and  self.pilha[-1].token == transicao.alteracao_pilha):
                 
                 return True
             else:
@@ -111,14 +104,14 @@ class Pda:
         elif transicao.op_pilha == VERIFICA_E_EMPILHA:
             token_verificar = transicao.alteracao_pilha[0]
             token_empilhar = transicao.alteracao_pilha[1]
-            if len(self.pilha) > 0 and self.pilha[-1] == token_verificar:
+            if len(self.pilha) > 0 and self.pilha[-1].token == token_verificar:
                 self.pilha.append(token_empilhar)
                 return True
             else: return False
         elif transicao.op_pilha == VERIFICA_DESEMPILHA_EMPILHA:
             token_verificar = transicao.alteracao_pilha[0]
             token_empilhar = transicao.alteracao_pilha[1]
-            if len(self.pilha) > 0 and self.pilha[-1] == token_verificar:
+            if len(self.pilha) > 0 and self.pilha[-1].token == token_verificar:
                 self.pilha.pop()
                 self.pilha.append(token_empilhar)
                 return True
@@ -149,7 +142,8 @@ class Pda:
             print(p)
 
         if v:
-            while( len(self.pilha) > 0 and (self.pilha[-1] == "FUN" or self.pilha[-1] == "IF" or self.pilha[-1] == TOKEN_ID.token)):
+            while( len(self.pilha) > 0 and (self.pilha[-1].token == "FUN" or self.pilha[-1].token == "IF" or self.pilha[-1].token == TOKEN_ID.token)):
+                STM_VECTOR.append(self.pilha[-1])
                 self.pilha.pop()
             
 

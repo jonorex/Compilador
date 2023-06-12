@@ -6,6 +6,7 @@ q1, tipo, q2, tipo, igual, manter, manter, 0,
 q1, id, q4, token, igual, emp, IDENTIFICADOR, 0
 q1, FOR, q5, token, igual, manter, manter, 0
 q1, RETURN, q41, token, igual, verifica,FUN.ABRE_CHAVE, 0
+q4, op, q11, tipo, igual, manter, manter, 0
 q0, FUN, q20, token, igual, emp, FUN, 0
 q2, id, q59, token, igual, manter, manter, 0
 q4, IGUAL, q11, token, igual, manter, manter, 0

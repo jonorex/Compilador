@@ -1,4 +1,4 @@
-from data import tokenList
+from data import *
 from consts import *
 import copy
 
@@ -63,9 +63,10 @@ def parse(code, linha, coluna):
             r = eDelimitador(code[right])
             t = eUnitario(code[right])
             if t != False:
-                t.linha = linha
-                t.coluna = coluna+left
-                LEXICAL_VECTOR.append(t)
+                dl = copy.copy(t)
+                dl.linha = linha
+                dl.coluna = coluna+left
+                LEXICAL_VECTOR.append(dl)
             #elif r != False:
             #    LEXICAL_VECTOR.append(r)
             right+=1
@@ -75,23 +76,27 @@ def parse(code, linha, coluna):
             sub = code[left : right]
             r = isKeyWord(sub)
             if r != False:
-                r.linha = linha
-                r.coluna = coluna+left
-                LEXICAL_VECTOR.append(r)
+                k = copy.copy(r)
+                k.linha = linha
+                k.coluna = coluna+left
+                LEXICAL_VECTOR.append(k)
             elif isNumber(sub):
-                num = TOKEN_NUMERO
+                num = copy.copy(TOKEN_NUMERO)
                 num.linha = linha
                 num.coluna = coluna+left
+                num.nome = sub
                 LEXICAL_VECTOR.append(num)
             elif validIdentifier(sub) == True and eUnitario(code[right-1]) == False:
                 tId = copy.copy(TOKEN_ID) 
                 tId.linha = linha
                 tId.coluna = coluna + left
+                tId.nome = sub
                 LEXICAL_VECTOR.append(tId)
             elif validIdentifier(sub) == False and eUnitario(code[right-1]) == False:
                 tId = copy.copy(TOKEN_ID) 
                 tId.linha = linha
                 tId.coluna = coluna + left
+                tId.nome = sub
                 LEXICAL_VECTOR.append(tId)
             left = right
     
@@ -109,11 +114,10 @@ def isComposeOperator(a, b):
 
 def verificaOpComposto():
     s = len(LEXICAL_VECTOR)
-
     for i in range(s):
         if LEXICAL_VECTOR[i].tipo == OP and (i != s and i != 0):
             if LEXICAL_VECTOR[i-1].tipo == OP:
-                r = isComposeOperator(LEXICAL_VECTOR[i-1].chave, LEXICAL_VECTOR[i].chave)
+                r = copy.copy(isComposeOperator(LEXICAL_VECTOR[i-1].chave, LEXICAL_VECTOR[i].chave))
                 if r != False:
                     LEXICAL_VECTOR[i-1] = r
                     LEXICAL_VECTOR[i] = TOKEN_NULO
@@ -122,32 +126,50 @@ def verificaOpComposto():
                 if r != False:
                     LEXICAL_VECTOR[i] = r
                     LEXICAL_VECTOR[i+1] = TOKEN_NULO
-        elif i == 0:
+        elif i == 0 and LEXICAL_VECTOR[i+1].tipo == OP and LEXICAL_VECTOR[i] == OP:
             if LEXICAL_VECTOR[i+1].tipo == OP:
                 r = isComposeOperator(LEXICAL_VECTOR[i].chave, LEXICAL_VECTOR[i+1].chave)
                 if r != False:
+                    
                     LEXICAL_VECTOR[i] = r
                     LEXICAL_VECTOR[i+1] = TOKEN_NULO
-        elif i == s:
+        elif i == s and LEXICAL_VECTOR[i-1].tipo == OP and LEXICAL_VECTOR[i].tipo == OP:
             
             if LEXICAL_VECTOR[i-1].tipo == OP:
                 r = isComposeOperator(LEXICAL_VECTOR[i-1].chave, LEXICAL_VECTOR[i].chave)
                 if r != False:
+                    
                     LEXICAL_VECTOR[i-1] = r
                     LEXICAL_VECTOR[i] = TOKEN_NULO
 
 
 
+def vericarIds():
+    verificar_tokens_desnessarios()
+    s = len(TOKENS)
+
+    for i in range(0,s):
+        if(i < s):
+            print("passou aqui")
+            if TOKENS[i].token == FUN.token and TOKENS[i+1].token == TOKEN_ID.token:
+                TOKENS[i+1].categoria = FUNCAO
+            elif TOKENS[i].tipo == TIPO and TOKENS[i+1].token == TOKEN_ID.token:
+                TOKENS[i+1].categoria = VARIAVEL
+    for token in TOKENS:
+        print(token)
     
 
 
-def printVetor(): 
+def verificar_tokens_desnessarios(): 
     s = len(LEXICAL_VECTOR)
     print("-------Vetor de Tokens----------\n")
+    j = 0
     for i in range(s):
-        if(LEXICAL_VECTOR[i] != TOKEN_NULO and LEXICAL_VECTOR[i].tipo != SPACE and LEXICAL_VECTOR[i] != tokenList[-1]):
+        if(LEXICAL_VECTOR[i] != TOKEN_NULO and LEXICAL_VECTOR[i].tipo != SPACE and LEXICAL_VECTOR[i].token != tokenList[-1].token):
+            LEXICAL_VECTOR[i].id = j
             TOKENS.append(LEXICAL_VECTOR[i])
-            print(LEXICAL_VECTOR[i])
+            j+=1
+            
 
 
                 

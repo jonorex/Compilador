@@ -5,12 +5,15 @@ class Token:
         self.tipo = tipo
         self.linha = ""
         self.coluna = 0
+        self.nome = ""
+        self.id = 0
+        self.categoria = ""
 
     def __repr__(self):
         return f"{self.token}"
 
     def __str__(self):
-        return f"{self.chave} {self.token} {self.tipo} {self.linha} {self.coluna}"
+        return f"<{self.id}, {self.chave}, {self.token}, {self.tipo}, {self.linha}, {self.coluna}, {self.nome}, {self.categoria}>"
     
         
     
