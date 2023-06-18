@@ -70,6 +70,8 @@ for linha in linhas:
         c5 = VERIFICA_E_EMPILHA
     elif c5 == "verTopoDesempEmp":
         c5 = VERIFICA_DESEMPILHA_EMPILHA
+    elif c5 == "ver_pilha":
+        c5 = "verifica"
 
 
 

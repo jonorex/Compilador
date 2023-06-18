@@ -11,7 +11,7 @@ sys.path.append(parent)
 sys.path.append('../compiladorPython')
 
 from consts import *
-from data import ABRE_P, VIRGULA
+from data import ABRE_P, VIRGULA, ABRE_CHAVE, FUN, FECHA_P
 STM_VECTOR = []
 class Pda:
     def __init__(self, estadoInicial, nEstados, estadosFinais, transicoes) -> None:
@@ -29,6 +29,10 @@ class Pda:
 
         if token.token != ABRE_P.token and token.token != VIRGULA.token and len(self.pilha) > 0 and self.pilha[-1].token == TOKEN_ID.token:
             self.pilha.pop()
+        
+        if token.token == VIRGULA.token and self.pilha[-1].token == TOKEN_ID.token:
+            self.pilha.pop()
+    
 
         if(campo_analisado == TIPO and condicao == IGUAL):
             if token.tipo == transicao.palavra_chave:
@@ -38,6 +42,7 @@ class Pda:
                 else: return False
             else:
                 return False
+        
         elif(campo_analisado == TIPO and condicao == DIFERENTE):
             if token.tipo != transicao.palavra_chave:
                 if self.mod_pilha(transicao, token):
@@ -68,7 +73,10 @@ class Pda:
         if transicao.op_pilha == EMPILHAR:
             self.pilha.append(token)
             return True
-        elif transicao.op_pilha == DESEMPILHAR and len(self.pilha) > 0:
+        elif transicao.op_pilha == DESEMPILHAR and len(self.pilha) > 0: 
+            if(len(self.pilha) > 1 and self.pilha[-2].token == TOKEN_ID.token and token.token == FECHA_P.token):
+                STM_VECTOR.append(self.pilha[-2])
+                del self.pilha[-2]
             if(len(self.pilha) > 0 and self.pilha[-1].token == transicao.alteracao_pilha):
                 STM_VECTOR.append(self.pilha[-1])
                 STM_VECTOR.append(token)
@@ -83,8 +91,8 @@ class Pda:
                     #print("linha 84 ",  )
                     if(self.pilha[-1].token == transicao.alteracao_pilha[-1].strip() 
                        and  self.pilha[-2].token == transicao.alteracao_pilha[-2].strip()):
-                        STM_VECTOR.append(self.pilha[-2])
-                        del self.pilha[-2]
+                        #STM_VECTOR.append(self.pilha[-2])
+                        #del self.pilha[-2]
                         
                         return True
             if(len(self.pilha) >  0  and  self.pilha[-1].token == transicao.alteracao_pilha):
@@ -94,7 +102,8 @@ class Pda:
                 return False
         elif transicao.op_pilha == "verifica":
             for p in self.pilha:
-                if p == transicao.alteracao_pilha:
+                if p.token == transicao.alteracao_pilha:
+                    print("pilha",p)
                     return True
             return False
         elif transicao.op_pilha == PILHA_VAZIA:
@@ -105,7 +114,7 @@ class Pda:
             token_verificar = transicao.alteracao_pilha[0]
             token_empilhar = transicao.alteracao_pilha[1]
             if len(self.pilha) > 0 and self.pilha[-1].token == token_verificar:
-                self.pilha.append(token_empilhar)
+                self.pilha.append(token)
                 return True
             else: return False
         elif transicao.op_pilha == VERIFICA_DESEMPILHA_EMPILHA:
@@ -113,7 +122,7 @@ class Pda:
             token_empilhar = transicao.alteracao_pilha[1]
             if len(self.pilha) > 0 and self.pilha[-1].token == token_verificar:
                 self.pilha.pop()
-                self.pilha.append(token_empilhar)
+                self.pilha.append(token)
                 return True
             else: return False
         else: return False
@@ -137,7 +146,6 @@ class Pda:
                 break
 
             i = i+1
-        
         for p in self.pilha:
             print(p)
 
@@ -146,8 +154,10 @@ class Pda:
                 STM_VECTOR.append(self.pilha[-1])
                 self.pilha.pop()
             
+        
+        #print("i", s)
 
-        if len(self.pilha) == 0 and len(self.pilha) == 0:
+        if len(self.pilha) == 0 and v:
             for e in self.estadosFinais:
                 if e == self.estadoAtual:
                     return "pertence a linguagem"

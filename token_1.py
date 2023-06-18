@@ -8,12 +8,17 @@ class Token:
         self.nome = ""
         self.id = 0
         self.categoria = ""
+        self.escopo = "Global, "
+        self.tipo_dado = ""
+
+    def inserir_escopo(self, e):
+        self.escopo.append(e)
 
     def __repr__(self):
         return f"{self.token}"
 
     def __str__(self):
-        return f"<{self.id}, {self.chave}, {self.token}, {self.tipo}, {self.linha}, {self.coluna}, {self.nome}, {self.categoria}>"
+        return f"<{self.id},{self.chave}, {self.token}, {self.tipo}, {self.linha}, {self.coluna}, {self.nome}, {self.categoria}, {self.escopo}, {self.tipo_dado}>"
     
         
     

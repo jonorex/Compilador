@@ -4,11 +4,11 @@ import copy
 
 LEXICAL_VECTOR = []
 TOKENS = []
-
+LISTA_FUNCOES_E_VARIAVEIS =[]
 def eUnitario(ch):
 
     for token in tokenList:
-        if token.chave == ch and (token.tipo == DELIMITADOR or token.tipo == OP or token.tipo==SPACE):
+        if token.chave == ch and (token.tipo == DELIMITADOR or token.tipo == OP or token.tipo==SPACE or token.tipo == "ATRIB"):
           return token 
     return False
 
@@ -49,6 +49,18 @@ def isNumber(stri):
         return True
     else:
         return False
+    
+def isFloat(stri):
+    sp = stri.split(".")
+    if len(sp) == 2 and sp[0].isnumeric() and sp[1].isnumeric():
+        return True
+    else: return False
+
+def isBooleanValue(stri):
+    if stri == "true" or stri == "false":
+        return True
+    else: return False
+        
 
 def parse(code, linha, coluna): 
     left = 0 
@@ -85,6 +97,21 @@ def parse(code, linha, coluna):
                 num.linha = linha
                 num.coluna = coluna+left
                 num.nome = sub
+                num.tipo_dado = "INT"
+                LEXICAL_VECTOR.append(num)
+            elif isFloat(sub):
+                num = copy.copy(TOKEN_NUMERO)
+                num.linha = linha
+                num.coluna = coluna+left
+                num.nome = sub
+                num.tipo_dado = "FLOAT"
+                LEXICAL_VECTOR.append(num)
+            elif isBooleanValue(sub):
+                num = copy.copy(TOKEN_NUMERO)
+                num.linha = linha
+                num.coluna = coluna+left
+                num.nome = sub
+                num.tipo_dado = "BOOL"
                 LEXICAL_VECTOR.append(num)
             elif validIdentifier(sub) == True and eUnitario(code[right-1]) == False:
                 tId = copy.copy(TOKEN_ID) 
@@ -101,8 +128,17 @@ def parse(code, linha, coluna):
             left = right
     
     verificaOpComposto()
+    isCharValue()
     return
 
+def isLogicOperator():
+    for token in TOKENS:
+        if token.token == MAIS.token or token.token == MENOS.token or token.token == ASTERISCO.token or token.token == BARRA.token:
+            token.categoria = "math"
+        elif  token.token == AND.token or token.token == OR.token:
+            token.categoria = "logic" 
+        elif token.token == MAIOR.token or token.token == MENOR.token or token.token == MAIOR_IGUAL.token or token.token == MENOR_IGUAL.token:
+            token.categoria = "relacional"
 
 def isComposeOperator(a, b):
     c = a + b
@@ -110,11 +146,42 @@ def isComposeOperator(a, b):
         if token.chave == c and token.tipo == OP:
           return token 
     return False
-    
+
+def isCharValue():
+    i = 0
+    while i < len(LEXICAL_VECTOR):
+        if LEXICAL_VECTOR[i].token == ASPAS_SIMPLES.token and LEXICAL_VECTOR[i+2].token == ASPAS_SIMPLES.token:
+            
+            value = LEXICAL_VECTOR[i+1].nome
+            if LEXICAL_VECTOR[i+1].nome == "":
+                value = LEXICAL_VECTOR[i+1].chave
+            num = copy.copy(TOKEN_NUMERO)
+            num.linha = LEXICAL_VECTOR[i].linha
+            num.coluna = LEXICAL_VECTOR[i].coluna
+            num.nome = ASPAS_SIMPLES.chave+value+ASPAS_SIMPLES.chave
+            num.tipo_dado = "CHAR"
+            LEXICAL_VECTOR[i]=num
+            LEXICAL_VECTOR[i+1] = TOKEN_NULO
+            LEXICAL_VECTOR[i+2] = TOKEN_NULO
+
+        elif  LEXICAL_VECTOR[i].token == ASPAS.token and LEXICAL_VECTOR[i+2].token == ASPAS.token:
+            value = LEXICAL_VECTOR[i+1].nome
+            if LEXICAL_VECTOR[i+1].nome == "":
+                value = LEXICAL_VECTOR[i+1].chave
+            num = copy.copy(TOKEN_NUMERO)
+            num.linha = LEXICAL_VECTOR[i].linha
+            num.coluna = LEXICAL_VECTOR[i].coluna
+            num.nome = ASPAS.chave+value+ASPAS.chave
+            num.tipo_dado = "CHAR"
+            LEXICAL_VECTOR[i]=num
+            LEXICAL_VECTOR[i+1] = TOKEN_NULO
+            LEXICAL_VECTOR[i+2] = TOKEN_NULO
+        i+=1
 
 def verificaOpComposto():
     s = len(LEXICAL_VECTOR)
     for i in range(s):
+        #print(LEXICAL_VECTOR[i])
         if LEXICAL_VECTOR[i].tipo == OP and (i != s and i != 0):
             if LEXICAL_VECTOR[i-1].tipo == OP:
                 r = copy.copy(isComposeOperator(LEXICAL_VECTOR[i-1].chave, LEXICAL_VECTOR[i].chave))
@@ -138,23 +205,27 @@ def verificaOpComposto():
             if LEXICAL_VECTOR[i-1].tipo == OP:
                 r = isComposeOperator(LEXICAL_VECTOR[i-1].chave, LEXICAL_VECTOR[i].chave)
                 if r != False:
-                    
                     LEXICAL_VECTOR[i-1] = r
                     LEXICAL_VECTOR[i] = TOKEN_NULO
+        if i != s and LEXICAL_VECTOR[i].token == MENOS.token and LEXICAL_VECTOR[i+1].token == TOKEN_NUMERO.token:
+            LEXICAL_VECTOR[i+1].nome = "-"+ LEXICAL_VECTOR[i+1].nome
+            LEXICAL_VECTOR[i+1].coluna -= 1
+            LEXICAL_VECTOR[i] = TOKEN_NULO
 
 
 
 def vericarIds():
-    verificar_tokens_desnessarios()
     s = len(TOKENS)
-
     for i in range(0,s):
         if(i < s):
-            print("passou aqui")
+            #print("passou aqui")
             if TOKENS[i].token == FUN.token and TOKENS[i+1].token == TOKEN_ID.token:
-                TOKENS[i+1].categoria = FUNCAO
+                TOKENS[i+1].categoria = FUNCAO+" "+str(TOKENS[i+1].id)
+                LISTA_FUNCOES_E_VARIAVEIS.append(TOKENS[i+1])
             elif TOKENS[i].tipo == TIPO and TOKENS[i+1].token == TOKEN_ID.token:
-                TOKENS[i+1].categoria = VARIAVEL
+                TOKENS[i+1].categoria = VARIAVEL +" "+str(TOKENS[i+1].id)
+                TOKENS[i+1].tipo_dado = TOKENS[i].token
+                LISTA_FUNCOES_E_VARIAVEIS.append(TOKENS[i+1])
     for token in TOKENS:
         print(token)
     
@@ -169,6 +240,12 @@ def verificar_tokens_desnessarios():
             LEXICAL_VECTOR[i].id = j
             TOKENS.append(LEXICAL_VECTOR[i])
             j+=1
+            #print(LEXICAL_VECTOR[i])
+    isLogicOperator()
+    
+    for token in TOKENS:
+        print(token)
+    #vericarIds()
             
 
 

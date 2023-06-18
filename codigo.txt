@@ -1,3 +1,33 @@
+int var_a;
+
+
+
+
+
+
 fun main()->int{
-    a = 2;
+    float var_a = -2.3;
+    int main = 2;
+    var_a = 0;
+    int var_b = 2;
+    int a = 1;
+    int c = 0;
+    char b = '2';
+    bool d = true;
+    bool e = false;
+    bool f = d||e;
+    if(!a){
+       int var_b = 352+54;
+       var_b = var_b + 1;
+       c = 2;
+       bool var_c = a+2>b+3;
+    } else{
+        a = 2;
+    }
+    a(a+2*c+3.2);
+    return a;
+}
+
+fun soma(int a, int b) -> int{
+    return a+b;
 }
