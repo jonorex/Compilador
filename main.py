@@ -1,6 +1,5 @@
 from lexer import *
 from syntax.data_automato import *
-from syntax.arvore import *
 import syntax.tres_enderecos as tres_enderecos
 import semantical.semantical as semantical
 from semantical.semantical import Semantical
@@ -10,6 +9,8 @@ arq = open("codigo.txt")
 linhas = arq.readlines()
 
 i = 0
+lexer = True
+#leitura do arquivo de entrada
 for linha in linhas:
     l = linha
     j = 1
@@ -22,52 +23,29 @@ for linha in linhas:
     l = linha.strip()
     if len(l) > 0 and eUnitario(l[-1]) == False:
         l = l + "¬"
-    parse(l.strip(), i, j)
+    if parse(l.strip(), i, j) == False:
+        lexer = False
+        break
 
 verificar_tokens_desnessarios()
 #vericarIds()
 
 semantica = Semantical(TOKENS)
+pda.tokenList = TOKENS
+pda.linhas = linhas 
+a = pda.parser()
+
+#if a != False :
+#    print("erro sintático")
+
+#for t in STM_VECTOR:
+#    print(t)
+
+if a != False and lexer:
+    semantica.parser(linhas)
+    tres_enderecos.clear_list()
+    tres_enderecos.generate(TOKENS)
+
+    tres_enderecos.print_code()
 
 
-a = pda.parser(TOKENS)
-print(a)
-##for t in TRANSICOES:
-##    if t.condicao == IGUAL:
-##        print(t.estado_inicial)
-print("STM_VECTOR", len(STM_VECTOR))
-for stm in STM_VECTOR:
-    print(stm)
-semantica.parser(linhas)
-
-
-
-#semantica.parser()
-
-#print("sub", sub)
-
-#tres_enderecos.parser(TOKENS)
-
-##for t in  pda.transicoes:
-##    print(t)
-#
-#
-##print("linha 36", len(STM_VECTOR))
-##v = Stm(STM_VECTOR=STM_VECTOR)
-##v.reduzir_expressao(TOKENS, 0, 0)
-#tres = tres_enderecos.Tres()
-#tres.verificar_exp(TOKENS)
-#tres.verificar_exp(TOKENS)
-##tres.reduzir()
-#tres.verificar_exp(TOKENS)
-
-#print(TOKENS[-2])
-#print(TOKENS[-3])
-#print(pda.estadoAtual)
-
-#a = validIdentifier("a")
-#a = lexer.subString(code, 0, 2)
-
-#a = eUnitario(" ")
-
-#parse(code)

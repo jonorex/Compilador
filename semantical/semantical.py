@@ -3,7 +3,7 @@ SUB = [FUN, WHILE, IF, ELSE]
 import copy
 import utils.utils as utils
 LISTA_FUNCOES_E_VARIAVEIS = []
-from syntax.tres_enderecos import Tres
+from syntax.tres_enderecos import *
 from syntax.pda import STM_VECTOR
 class Semantical:
     def __init__(self, TOKENS) -> None:
@@ -60,7 +60,7 @@ class Semantical:
     def buscar_tokens(self):
         lista_abre_chave = self.buscar_abre_chave()
 
-        print(lista_abre_chave)
+        #print(lista_abre_chave)
 
         for abre_chave in lista_abre_chave:
             sub = self.buscar_tokens_de_sub_escopo(abre_chave[0])
@@ -128,25 +128,40 @@ class Semantical:
                     a = self.TOKENS[fun[0].id-1].token + " " +str(self.TOKENS[fun[0].id-1].id) + ","
                     self.TOKENS[param.id].escopo += a 
 
+    def buscar_fechap(self, abre_p):
+        i = -1
+        for st in STM_VECTOR:
+            i+=1
+            if st == abre_p:
+                break
+        return STM_VECTOR[i+1]
 
     def parser(self, linhas):
-        self.vericarIds()
+        self.vericarIds(linhas)
         self.buscar_tokens()
         self.definir_escopo_args()
 
-        if self.identificadores_nao_declarados(linhas):
+        self.identificadores_nao_declarados(linhas)
 
-            self.duplicidade(linhas)
-            for i in range(len(self.TOKENS)):
-                if self.TOKENS[i].token == IGUAL.token:
-                    l_value = self.TOKENS[i-1]
-                    j = i
-                    while self.TOKENS[j].token != PONTO_VIRGULA.token:
-                        j+=1
-                    r_value = self.TOKENS[i+1:j]
-                    self.verificar_tipo(identificador=l_value, dado=r_value, linha= linhas)
-        else:
-            self.duplicidade(linhas)
+        self.duplicidade(linhas)
+        for i in range(len(self.TOKENS)):
+            if self.TOKENS[i].token == IGUAL.token:
+                l_value = self.TOKENS[i-1]
+                j = i+1
+
+                r_value = []
+                while self.TOKENS[j].token != PONTO_VIRGULA.token:
+                    if self.TOKENS[j].token == TOKEN_ID.token and self.TOKENS[j+1].token == ABRE_P.token:
+                        r_value.append(self.TOKENS[j])
+                        fecha_p = self.buscar_fechap(self.TOKENS[j+1])
+                        j = fecha_p.id
+                    else:
+                        r_value.append(self.TOKENS[j])
+                    j+=1
+               # r_value = self.TOKENS[i+1:j]
+                self.verificar_tipo(identificador=l_value, dado=r_value, linha= linhas)
+    
+        #self.duplicidade(linhas)
         
         self.buscar_retorno_funcao(linhas)
 
@@ -163,7 +178,7 @@ class Semantical:
         j = 0
         params = self.TOKENS[abreP.id:fechaP.id+1]
         sub = []
-        print("179 params ",params)
+        #print("179 params ",params)
 
         #while i < s:
         #    i+= 1
@@ -176,13 +191,13 @@ class Semantical:
                 #print("linha 175 d = ",d)
                 sub.append(params[j+1:k]) 
                 j=k
-        print("sub 191 ", sub)
+        #print("sub 191 ", sub)
         return sub
 
         
 
     def verificar_params(self, call, linhas):
-        print("linha 198 ", call)
+        #print("linha 198 ", call)
         call_id = call[0]
         call_params = call[1] # lista de parametros
         
@@ -192,10 +207,7 @@ class Semantical:
                 if len(call_params) == len(fun[1]):
                     i = 0 
                     for i in range(len(fun[1])):
-                        if call_params[1][i].token == VIRGULA.token:
-                            continue
-                        print("210", call_id)
-                        self.verificar_tipo(call_id, call_params[i], linhas)
+                        self.verificar_tipo(fun[1][i], call_params[i], linhas)
                 else:
                     utils.gerar_menssagem_erro("A função precisa de "+ str(len(fun[1]))+", parametros porém foram passados "+str(len(call_params)), call_id, linhas[call_id.linha - 1])
                     
@@ -205,11 +217,11 @@ class Semantical:
         for i in range(len(STM_VECTOR)):
             if STM_VECTOR[i].token == TOKEN_ID.token and STM_VECTOR[i+1].token == ABRE_P.token:
                 sp =  STM_VECTOR[i].categoria.split(" ")
-                print("linha 220", sp)
+                #print("linha 220", sp)
                 if(sp[1] ==  "fun"):
                     identificador_call = STM_VECTOR[i]  
                     params = self.get_params(STM_VECTOR[i+1], STM_VECTOR[i+2])
-                    print("linha 217 passou aqui", params)
+                    #print("linha 217 passou aqui", params)
                     self.verificar_params([identificador_call, params], linhas)
                 elif(sp[1] == "var"):
                     if(self.tem_virgula(STM_VECTOR[i+1], STM_VECTOR[i+2])):
@@ -248,8 +260,11 @@ class Semantical:
     def get_expressao(self, l_value, inicio, fim, token_inicial, token_final, linhas):
         i = inicio
         s = fim
+        r_value = []
+        tem_retorno = False
         while i < s:
             if self.TOKENS[i].token == token_inicial.token:
+                tem_retorno = True
                 #l_value = self.TOKENS[i-1]
                 j = i
                 while self.TOKENS[j].token != token_final.token:
@@ -257,19 +272,21 @@ class Semantical:
                 r_value = self.TOKENS[i+1:j]
                 self.verificar_tipo(identificador=l_value, dado=r_value, linha= linhas)
             i+=1
+        if tem_retorno == False and l_value.tipo_dado != VOID.token:
+            utils.gerar_menssagem_erro("Função do tipo "+ l_value.tipo_dado + " sem retorno", l_value, linhas[l_value.linha -1 ])
+        
 
-    def encontrar_retornos(self, abre_chave):
-        pass
+
 
         
     def buscar_retorno_funcao(self, linha):
         s = len(self.TOKENS)
         i = 0
         for fun in self.funcoes:
-            print("191", fun)
+            #print("191", fun)
             tipo_funcao = self.buscar_tipo_funcao(self.TOKENS[fun[0].id+1])
             chaves = self.encontrar_abre_chave(tipo_funcao)
-            print("192", chaves)
+           # print("192", chaves)
             self.get_expressao(fun[0], chaves[0].id, chaves[1].id, RETURN, PONTO_VIRGULA, linha)
              # self.encontrar_retornos(abre_chave)
 
@@ -293,11 +310,11 @@ class Semantical:
                 continue
 
             args.append(self.TOKENS[i])
-        print("args",args)
+        #print("args",args)
         return args
          
 
-    def vericarIds(self):
+    def vericarIds(self, linhas):
         s = len(self.TOKENS)
         b = True
         for i in range(0,s):
@@ -309,6 +326,8 @@ class Semantical:
                     self.TOKENS[i+1].categoria = FUNCAO+" "+str(self.TOKENS[i+1].id)
                     self.TOKENS[i+1].tipo_dado = self.buscar_tipo_funcao(self.TOKENS[i+2]).token
                 elif self.TOKENS[i].tipo == TIPO and self.TOKENS[i+1].token == TOKEN_ID.token:
+                    if(self.TOKENS[i].token == VOID.token):
+                        utils.gerar_menssagem_erro("Void é inválido para variáveis ", self.TOKENS[i], linhas[self.TOKENS[i].linha -1])
                     self.TOKENS[i+1].categoria = VARIAVEL +" "+str(self.TOKENS[i+1].id)
                     self.TOKENS[i+1].tipo_dado = self.TOKENS[i].token
         return b
@@ -336,39 +355,51 @@ class Semantical:
             if self.TOKENS[i].categoria == "" and self.TOKENS[i].token == TOKEN_ID.token:
                 r = False
                 if self.TOKENS[i+1].token == ABRE_P.token:
-                    utils.gerar_menssagem_erro("Função não declarada", self.TOKENS[i], linhas[self.TOKENS[i].linha -1 ])
+                    utils.gerar_menssagem_erro("Função "+ self.TOKENS[i].nome+" não declarada", self.TOKENS[i], linhas[self.TOKENS[i].linha -1 ])
                 else:
-                    utils.gerar_menssagem_erro("Variável não declarada", self.TOKENS[i], linhas[self.TOKENS[i].linha -1])
+                    utils.gerar_menssagem_erro("Variável "+ self.TOKENS[i].nome+" não declarada", self.TOKENS[i], linhas[self.TOKENS[i].linha -1])
         return r
     def verificar_tipo(self, identificador, dado, linha):
+        if identificador.tipo_dado == "":
+            return
+        if identificador.tipo_dado == "VOID" and len(dado) > 0:
+            utils.gerar_menssagem_erro_tipos_incompativeis(identificador, dado[0], linha[dado[0].linha-1])
+            #utils.gerar_menssagem_erro("Tipos incompatíveis", dado[0], linha[dado[0].linha-1])
+            return
         if len(dado) == 1:
             if identificador.tipo_dado == "FLOAT" and dado[0].tipo_dado == "INT":
                 pass
             elif identificador.tipo_dado == "string" and dado[0].tipodado == "char":
                 pass
+            elif dado[0].tipo_dado ==  "":
+                pass
             elif identificador.tipo_dado != dado[0].tipo_dado:
-                utils.gerar_menssagem_erro("Tipos incompatíveis", dado[0], linha[dado[0].linha-1])
+                utils.gerar_menssagem_erro_tipos_incompativeis(identificador, dado[0], linha[dado[0].linha-1])
             
         elif len(dado) > 1:
             if identificador.tipo_dado == "INT" or identificador.tipo_dado == "CHAR":
                 for t in dado:
+                    if t.token == ABRE_P.token or t.token == FECHA_P.token or t.token == VIRGULA.token:
+                        continue
                     if t.tipo_dado == "INT":
                         pass
                     elif t.categoria == "math":
                         pass
                     else:
-                        utils.gerar_menssagem_erro("Atribuição de tipos incompátiveis (Int) ", t, linha[t.linha -1])
+                        #print("357 ", identificador)
+                        utils.gerar_menssagem_erro_tipos_incompativeis(identificador, t, linha[t.linha-1])
             elif identificador.tipo_dado == "FLOAT":
                 for t in dado:
                     if t.tipo_dado != "FLOAT" and t.tipo_dado != "INT":
-                        utils.gerar_menssagem_erro("Atribuição de tipos incompátiveis (Float) ", t, linha[t.linha -1])
+                        utils.gerar_menssagem_erro_tipos_incompativeis(identificador, t, linha[t.linha-1])
             elif identificador.tipo_dado == "BOOL":
                 l = dado[0].linha-1
                 to = dado[0]
                 tres_end = Tres()
                 tres_end.verificar_exp(dado)
+                print_code()
                 if tres_end.isBool == False:    
-                    utils.gerar_menssagem_erro("Atribuição de tipos incompátiveis (Bool) ", to, linha[l])               
+                    utils.gerar_menssagem_erro_tipos_incompativeis(identificador, to, linha[to.linha-1])              
                     
                     
         

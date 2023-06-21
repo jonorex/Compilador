@@ -18,10 +18,10 @@ q7, PONTO_VIRGULA, q9, token, igual, manter, manter, 0
 q8, id, q7, token, igual, manter, manter, 0
 q10, id, q16, token, igual, manter, manter, 0
 q10, num, q17, token, igual, manter, manter, 0
-q11, NOT, q74, token, igual, manter, manter, 0
 q11, id, q49, token, igual, emp, IDENTIFICADOR, 0
 q11, num, q49, token, igual, manter, manter, 0
 q11, ABRE_P, q48, token, igual, emp, ABRE_P,0
+q11, NOT, q74, token, igual, manter, manter, 0
 q12, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q12, op, q13, tipo, igual, manter, manter, 0
 q13, num, q14, token, igual, manter, manter, 0
@@ -37,8 +37,8 @@ q20, id, q22, token, igual, manter, manter, 0
 q22, ABRE_P, q23, token, igual, emp, ABRE_P, 0
 q23, FECHA_P, q24, token, igual, desemp, ABRE_P, 0
 q23, tipo, q31, tipo, igual, manter, manter, 0
-q73, PONTO_VIRGULA, q0, token, igual, manter, manter, 0
 q73, ABRE_CHAVE, q1, token, igual, emp, ABRE_CHAVE, 0
+q73, PONTO_VIRGULA, q0, token, igual, manter, manter, 0
 q26, FECHA_CHAVE, q26, token, igual, desemp, ABRE_CHAVE, 0
 q26, ELSE, q27, token, igual, desemp, IF, 0
 q27, ABRE_CHAVE, q1, token, igual, emp, ABRE_CHAVE, 0
@@ -50,11 +50,13 @@ q41, id, q49, token, igual, manter, manter, 0
 q41, num, q49, token, igual, manter, manter, 0
 q41, ABRE_P, q48, token, igual, emp, ABRE_P,0
 q41, NOT, q74, TOKEN, igual, manter, manter, 0
+q41, PONTO_VIRGULA, q15, TOKEN, igual, manter, manter, 0
 q74, id, q49, token, igual, manter, manter, 0
 q74, ABRE_P, q48, token, igual, emp, ABRE_P,0
 q48, id, q50, token, igual, emp, IDENTIFICADOR, 0
 q48, num, q50, token, igual, manter, manter, 0
 q48, ABRE_P, q48, token, igual, emp, ABRE_P, 0
+q49, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q49, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q49, FECHA_P, q49, token, igual, desemp, ABRE_P, 0
 q49, op, q51, tipo, igual, manter, manter, 0
@@ -63,7 +65,6 @@ q50, op, q51, tipo, igual, manter, manter, 0
 q51, id, q49, token, igual, emp, IDENTIFICADOR, 0
 q51, num, q49, token, igual, manter, manter, 0
 q51, NOT, q74, token, igual, manter, manter, 0
-q49, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q51, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q1, IF, q52, token, igual, emp, IF, 0
 q1, WHILE, q52, token, igual, emp, IF, 0
@@ -82,12 +83,11 @@ q50, num, q49, token, igual, manter, manter, 0
 q50, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q50, NOT, q74, token, igual, manter, manter, 0
 q48, FECHA_P, q49, token, igual, desemp, ABRE_P, 0
-q59, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q59, IGUAL, q11, token, igual, manter, manter, 0
+q59, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q52, ABRE_P, q11, token, igual, emp, ABRE_P,0
 q24, FLEXA, q72, token, igual, manter, manter,0
 q72, tipo, q73, tipo, igual, manter, manter, 0
 q49, ABRE_CHAVE, q1, token, igual, verEmp,IF.ABRE_CHAVE, 0
 q49, ABRE_CHAVE, q1, token, igual, verTopoDesempEmp,WHILE.ABRE_CHAVE, 0
 q26, FECHA_CHAVE, q1, token, DIFERENTE, manter, manter, 1
-q26, ELSE, q26, token, DIFERENTE, desemp, IF, 1

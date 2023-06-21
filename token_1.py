@@ -3,7 +3,7 @@ class Token:
         self.chave = chave
         self.token = token
         self.tipo = tipo
-        self.linha = ""
+        self.linha = 0
         self.coluna = 0
         self.nome = ""
         self.id = 0

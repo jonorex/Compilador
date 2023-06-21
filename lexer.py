@@ -1,12 +1,26 @@
 from data import *
 from consts import *
 import copy
+import utils.utils as utils
 
 LEXICAL_VECTOR = []
 TOKENS = []
 LISTA_FUNCOES_E_VARIAVEIS =[]
-def eUnitario(ch):
 
+class Comment:
+    def __init__(self) -> None:
+        self.is_comment = False
+    
+    def set_comment(self):
+        if self.is_comment:
+            self.is_comment = False
+        else:
+            self.is_comment = True
+
+
+comment = Comment()
+
+def eUnitario(ch):
     for token in tokenList:
         if token.chave == ch and (token.tipo == DELIMITADOR or token.tipo == OP or token.tipo==SPACE or token.tipo == "ATRIB"):
           return token 
@@ -57,7 +71,7 @@ def isFloat(stri):
     else: return False
 
 def isBooleanValue(stri):
-    if stri == "true" or stri == "false":
+    if stri == TRUE.chave or stri == FALSE.chave:
         return True
     else: return False
         
@@ -65,10 +79,10 @@ def isBooleanValue(stri):
 def parse(code, linha, coluna): 
     left = 0 
     right = 0
-
+    comment.is_comment = False
     size = len(code)
     while right <= size-1 and left <= right:
-        if eUnitario(code[right]) == False:
+        if eUnitario(code[right]) == False: 
             right+= 1
         if eUnitario(code[right]) != False and left == right:
             s = isOperator(code[right])
@@ -125,13 +139,15 @@ def parse(code, linha, coluna):
                 tId.coluna = coluna + left
                 tId.nome = sub
                 LEXICAL_VECTOR.append(tId)
+                utils.gerar_menssagem_erro("Erro léxico identificador inválido: ", tId, code)
+                return False
             left = right
     
     verificaOpComposto()
     isCharValue()
     return
 
-def isLogicOperator():
+def isLogicOperator(): #verifica se o tipo do operador depois de fazer o parse de todas as linhas
     for token in TOKENS:
         if token.token == MAIS.token or token.token == MENOS.token or token.token == ASTERISCO.token or token.token == BARRA.token:
             token.categoria = "math"
@@ -140,14 +156,13 @@ def isLogicOperator():
         elif token.token == MAIOR.token or token.token == MENOR.token or token.token == MAIOR_IGUAL.token or token.token == MENOR_IGUAL.token:
             token.categoria = "relacional"
 
-def isComposeOperator(a, b):
+def isComposeOperator(a, b):#verifica se o tipo do operador é composto depois de fazer o parse de todas as linhas
     c = a + b
     for token in tokenList:
         if token.chave == c and token.tipo == OP:
           return token 
     return False
-
-def isCharValue():
+def isCharValue(): #verifica se o valor é char
     i = 0
     while i < len(LEXICAL_VECTOR):
         if LEXICAL_VECTOR[i].token == ASPAS_SIMPLES.token and LEXICAL_VECTOR[i+2].token == ASPAS_SIMPLES.token:
@@ -155,7 +170,7 @@ def isCharValue():
             value = LEXICAL_VECTOR[i+1].nome
             if LEXICAL_VECTOR[i+1].nome == "":
                 value = LEXICAL_VECTOR[i+1].chave
-            num = copy.copy(TOKEN_NUMERO)
+            num = copy.copy(TOKEN_NUMERO) # o token numero é utilizado para representar qualquer tipo de valor a propriedade que armazena o tipo é o atributo tipo_dado
             num.linha = LEXICAL_VECTOR[i].linha
             num.coluna = LEXICAL_VECTOR[i].coluna
             num.nome = ASPAS_SIMPLES.chave+value+ASPAS_SIMPLES.chave
@@ -178,7 +193,7 @@ def isCharValue():
             LEXICAL_VECTOR[i+2] = TOKEN_NULO
         i+=1
 
-def verificaOpComposto():
+def verificaOpComposto(): #após a análise é verificado se dois operadores que estão juntos possam ser compostos com  && >=
     s = len(LEXICAL_VECTOR)
     for i in range(s):
         #print(LEXICAL_VECTOR[i])
@@ -196,8 +211,7 @@ def verificaOpComposto():
         elif i == 0 and LEXICAL_VECTOR[i+1].tipo == OP and LEXICAL_VECTOR[i] == OP:
             if LEXICAL_VECTOR[i+1].tipo == OP:
                 r = isComposeOperator(LEXICAL_VECTOR[i].chave, LEXICAL_VECTOR[i+1].chave)
-                if r != False:
-                    
+                if r != False:     
                     LEXICAL_VECTOR[i] = r
                     LEXICAL_VECTOR[i+1] = TOKEN_NULO
         elif i == s and LEXICAL_VECTOR[i-1].tipo == OP and LEXICAL_VECTOR[i].tipo == OP:
@@ -212,40 +226,20 @@ def verificaOpComposto():
             LEXICAL_VECTOR[i+1].coluna -= 1
             LEXICAL_VECTOR[i] = TOKEN_NULO
 
-
-
-def vericarIds():
-    s = len(TOKENS)
-    for i in range(0,s):
-        if(i < s):
-            #print("passou aqui")
-            if TOKENS[i].token == FUN.token and TOKENS[i+1].token == TOKEN_ID.token:
-                TOKENS[i+1].categoria = FUNCAO+" "+str(TOKENS[i+1].id)
-                LISTA_FUNCOES_E_VARIAVEIS.append(TOKENS[i+1])
-            elif TOKENS[i].tipo == TIPO and TOKENS[i+1].token == TOKEN_ID.token:
-                TOKENS[i+1].categoria = VARIAVEL +" "+str(TOKENS[i+1].id)
-                TOKENS[i+1].tipo_dado = TOKENS[i].token
-                LISTA_FUNCOES_E_VARIAVEIS.append(TOKENS[i+1])
-    for token in TOKENS:
-        print(token)
-    
-
-
+#retira tokens que nao sao uteis na analise como espacos 
 def verificar_tokens_desnessarios(): 
     s = len(LEXICAL_VECTOR)
-    print("-------Vetor de Tokens----------\n")
+    #print("-------Vetor de Tokens----------\n")
     j = 0
     for i in range(s):
         if(LEXICAL_VECTOR[i] != TOKEN_NULO and LEXICAL_VECTOR[i].tipo != SPACE and LEXICAL_VECTOR[i].token != tokenList[-1].token):
             LEXICAL_VECTOR[i].id = j
             TOKENS.append(LEXICAL_VECTOR[i])
             j+=1
-            #print(LEXICAL_VECTOR[i])
+            print(LEXICAL_VECTOR[i])
+
     isLogicOperator()
     
-    for token in TOKENS:
-        print(token)
-    #vericarIds()
             
 
 
