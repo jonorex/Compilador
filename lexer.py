@@ -236,7 +236,7 @@ def verificar_tokens_desnessarios():
             LEXICAL_VECTOR[i].id = j
             TOKENS.append(LEXICAL_VECTOR[i])
             j+=1
-            print(LEXICAL_VECTOR[i])
+            #print(LEXICAL_VECTOR[i])
 
     isLogicOperator()
     

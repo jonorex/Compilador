@@ -1,10 +1,12 @@
-fun main()->void{
-    int a = 2;;
-    int c = 0;
+fun main()->int{
+    int a = 1;
+    int c = 2;
     int b = 2;
     if (a>2){
         int b = 3;
     } else {
         c = b;
     }
+
+    return 0;
 }

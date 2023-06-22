@@ -13,6 +13,7 @@ from consts import *
 from data import ABRE_P, VIRGULA, ABRE_CHAVE, FUN, FECHA_P, IF, FECHA_CHAVE
 import utils.utils as utils
 STM_VECTOR = []
+erro_semantico = []
 class Pda:
     def __init__(self, estadoInicial, nEstados, estadosFinais, transicoes) -> None:
         self.estadoInicial = estadoInicial
@@ -135,10 +136,12 @@ class Pda:
 
 
   
-    def parser(self):
+    def parser(self, i):
         s = len(self.tokenList)
         j = -1
-        i = 0
+        #print(i>= len(self.tokenList))
+        v = True
+        tokens_esperados = []
         while i < s:
             v = False
             tokens_esperados = []
@@ -148,7 +151,7 @@ class Pda:
                     tokens_esperados.append(transicao)
                     if self.verificarTransicao(self.tokenList[i], transicao) == True:
                         v = True
-                        print(self.estadoAtual)
+                        #print(self.estadoAtual)
                         if transicao.consumir == True:
                             i = i-1
                         break
@@ -165,11 +168,17 @@ class Pda:
 
         else:
 
-            #for t in tokens_esperados:
-            #    self.estadoAtual = t.estado_final
+            for t in tokens_esperados:
+                if t.consumir == False:
+                    self.estadoAtual = t.estado_final
+                #print(len(self.tokenList))
+                if self.parser(i+1):
+                    erro_semantico.append("")
+                    utils.gerar_menssagem_erro_sintatico(self.tokenList[i], t, self.linhas[self.tokenList[i].linha -1])
+                    return True
+            print(i)
 
-
-            utils.gerar_menssagem_erro_sintatico(self.tokenList[i], tokens_esperados, self.linhas[self.tokenList[i].linha -1])
+            
                    
             
         

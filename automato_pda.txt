@@ -83,8 +83,8 @@ q50, num, q49, token, igual, manter, manter, 0
 q50, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q50, NOT, q74, token, igual, manter, manter, 0
 q48, FECHA_P, q49, token, igual, desemp, ABRE_P, 0
-q59, IGUAL, q11, token, igual, manter, manter, 0
 q59, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
+q59, IGUAL, q11, token, igual, manter, manter, 0
 q52, ABRE_P, q11, token, igual, emp, ABRE_P,0
 q24, FLEXA, q72, token, igual, manter, manter,0
 q72, tipo, q73, tipo, igual, manter, manter, 0

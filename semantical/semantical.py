@@ -135,15 +135,8 @@ class Semantical:
             if st == abre_p:
                 break
         return STM_VECTOR[i+1]
-
-    def parser(self, linhas):
-        self.vericarIds(linhas)
-        self.buscar_tokens()
-        self.definir_escopo_args()
-
-        self.identificadores_nao_declarados(linhas)
-
-        self.duplicidade(linhas)
+    
+    def verificar_tipo_atribuicoes(self, linhas):
         for i in range(len(self.TOKENS)):
             if self.TOKENS[i].token == IGUAL.token:
                 l_value = self.TOKENS[i-1]
@@ -160,6 +153,17 @@ class Semantical:
                     j+=1
                # r_value = self.TOKENS[i+1:j]
                 self.verificar_tipo(identificador=l_value, dado=r_value, linha= linhas)
+
+    def parser(self, linhas):
+        self.vericarIds(linhas)
+        self.buscar_tokens()
+        self.definir_escopo_args()
+
+        self.identificadores_nao_declarados(linhas)
+
+        self.duplicidade(linhas)
+        self.verificar_tipo_atribuicoes(linhas)
+
     
         #self.duplicidade(linhas)
         
@@ -167,9 +171,13 @@ class Semantical:
 
         self.verificar_chamada_de_funcoes(linhas)
 
-        print("----------------____________________________")
-        for t in self.TOKENS:
-            print(t)
+        if len(utils.erro_semantico) > 0:
+            return False
+        else:
+            return True
+        #print("----------------____________________________")
+        #for t in self.TOKENS:
+        #    print(t)
     
 
     def get_params(self, abreP, fechaP):

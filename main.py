@@ -32,8 +32,9 @@ verificar_tokens_desnessarios()
 
 semantica = Semantical(TOKENS)
 pda.tokenList = TOKENS
-pda.linhas = linhas 
-a = pda.parser()
+pda.linhas = linhas
+pda.estadoAtual = "q0" 
+a = pda.parser(0)
 
 #if a != False :
 #    print("erro sintático")
@@ -41,11 +42,10 @@ a = pda.parser()
 #for t in STM_VECTOR:
 #    print(t)
 
-if a != False and lexer:
-    semantica.parser(linhas)
-    tres_enderecos.clear_list()
-    tres_enderecos.generate(TOKENS)
-
-    tres_enderecos.print_code()
+if len(erro_semantico) == 0 and lexer:
+    if semantica.parser(linhas):
+        tres_enderecos.clear_list()
+        tres_enderecos.generate(TOKENS)
+        tres_enderecos.print_code()
 
 

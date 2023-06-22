@@ -4,7 +4,10 @@ from data import tokenList
 from consts import *
 from data import *
 
+erro_semantico = []
+
 def gerar_menssagem_erro(tipo, token, linha):
+    erro_semantico.append("")
     linha_numerica = token.linha
     coluna = token.coluna
     if token.nome == "":   
@@ -25,6 +28,7 @@ def gerar_menssagem_erro(tipo, token, linha):
     print(string_error)
 
 def gerar_menssagem_erro_tipos_incompativeis(l_token, r_token, linha):
+    erro_semantico.append("")
     print("Tipos incompátiveis na linha "+ str(r_token.linha+1)+": ")
     linha = linha.replace("\n", "")
     print(linha)
@@ -40,7 +44,7 @@ def gerar_menssagem_erro_tipos_incompativeis(l_token, r_token, linha):
     print("Era esperado um valor do tipo "+ l_token.tipo_dado + ", mas o tipo foi obtido foi "+ r_token.tipo_dado)
     print("\n")
 
-def gerar_menssagem_erro_sintatico(token_lido, tokens_esperado, linha):
+def gerar_menssagem_erro_sintatico(token_lido, token_esperado, linha):
     if token_lido.linha == 0:
         return ""
     text = ""
@@ -52,7 +56,7 @@ def gerar_menssagem_erro_sintatico(token_lido, tokens_esperado, linha):
     string_error = ""
     for i in range(0, token_lido.coluna-1):
         string_error+="-"
-    if token_lido.tipo == OP:
+    if token_lido.nome == "":
         for i in range(0,len(token_lido.chave)):
             string_error+= "∧"
     else:
@@ -62,11 +66,10 @@ def gerar_menssagem_erro_sintatico(token_lido, tokens_esperado, linha):
     text += string_error
     text += "\n"
     text += "Os tokens esperados são : "
-    for t in tokens_esperado:
-        text += t.palavra_chave +", "
+    text += token_esperado.palavra_chave +", "
     text += "\n"
     text += "Porém foi lido um "+str(token_lido.token)
-
+    text += "\n"
     print(text)
 
 
