@@ -1,3 +1,5 @@
+q15, FECHA_CHAVE, q26, token, igual, desemp, ABRE_CHAVE, 0
+q1, FECHA_CHAVE, q26, token, igual, desemp, ABRE_CHAVE, 0
 q15, FUN, q0, token, igual, verifica, FUN, 1
 q15, FUN, q0, token, igual, pilha_vazia, manter, 1
 q0, FUN, q1, token, DIFERENTE, manter, manter, 1
@@ -5,6 +7,10 @@ q1, tipo, q2, tipo, igual, manter, manter, 0,
 q1, id, q4, token, igual, emp, IDENTIFICADOR, 0
 q1, FOR, q5, token, igual, manter, manter, 0
 q1, RETURN, q41, token, igual,ver_pilha,FUN, 0
+q15, tipo, q2, tipo, igual, manter, manter, 0,
+q15, id, q4, token, igual, emp, IDENTIFICADOR, 0
+q15, FOR, q5, token, igual, manter, manter, 0
+q15, RETURN, q41, token, igual,ver_pilha,FUN, 0
 q4, op, q11, tipo, igual, manter, manter, 0
 q0, FUN, q20, token, igual, emp, FUN, 0
 q2, id, q59, token, igual, manter, manter, 0
@@ -28,8 +34,6 @@ q13, num, q14, token, igual, manter, manter, 0
 q13, id, q12, token, igual, manter, manter, 0
 q14, op, q13, tipo, igual, manter, manter, 0
 q14, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
-q15, FECHA_CHAVE, q1, token, DIFERENTE, manter, manter, 1
-q15, FECHA_CHAVE, q26, token, igual, desemp, ABRE_CHAVE, 0
 q17, PONTO_VIRGULA, q18, token, igual, manter, manter, 0
 q18, FECHA_P, q19, token, igual, manter, manter, 0
 q19, ABRE_CHAVE, q1, token, igual, emp, ABRE_CHAVE, 0
@@ -68,9 +72,10 @@ q51, NOT, q74, token, igual, manter, manter, 0
 q51, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q1, IF, q52, token, igual, emp, IF, 0
 q1, WHILE, q52, token, igual, emp, IF, 0
+q15, IF, q52, token, igual, emp, IF, 0
+q15, WHILE, q52, token, igual, emp, IF, 0
 q27, IF, q52, token, igual, emp, IF, 0
 q26, FUN, q0, token, igual, verifica, FUN, 1
-q1, FECHA_CHAVE, q26, token, igual, desemp, ABRE_CHAVE, 0
 q50, VIRGULA, q58, token, igual, verifica, IDENTIFICADOR. ABRE_P, 0 
 q49, VIRGULA, q58, token, igual, verifica, IDENTIFICADOR. ABRE_P, 0 
 q58, id, q50, token, igual, emp, IDENTIFICADOR, 0
@@ -83,8 +88,8 @@ q50, num, q49, token, igual, manter, manter, 0
 q50, ABRE_P, q48, token, igual, emp, ABRE_P, 0
 q50, NOT, q74, token, igual, manter, manter, 0
 q48, FECHA_P, q49, token, igual, desemp, ABRE_P, 0
-q59, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q59, IGUAL, q11, token, igual, manter, manter, 0
+q59, PONTO_VIRGULA, q15, token, igual, manter, manter, 0
 q52, ABRE_P, q11, token, igual, emp, ABRE_P,0
 q24, FLEXA, q72, token, igual, manter, manter,0
 q72, tipo, q73, tipo, igual, manter, manter, 0

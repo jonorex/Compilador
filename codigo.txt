@@ -1,12 +1,16 @@
+int b = 3;
+fun main(int a, int b)->int{
+    return a+b;
+}
 fun main()->int{
-    int a = 1;
+    int a;
     int c = 2;
     int b = 2;
-    if (a>2){
-        int b = 3;
-    } else {
-        c = b;
+    if(a>b){
+        a = main(b, c);
     }
-
-    return 0;
+    else if(a>2){
+        b= 4*5;
+    }
+    return 2+4;
 }

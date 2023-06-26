@@ -211,7 +211,7 @@ class Semantical:
         
         for fun in self.funcoes:
             #print("linha 205", fun)
-            if fun[0].nome == call_id.nome:
+            if fun[0].nome == call_id.nome and len(call_params) == len(fun[1]):
                 if len(call_params) == len(fun[1]):
                     i = 0 
                     for i in range(len(fun[1])):

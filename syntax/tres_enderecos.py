@@ -308,7 +308,10 @@ class Exp_stm(Tres):
     def __init__(self, exp) -> None:
         super().__init__()
         result = self.verificar_exp(exp)
-        ins = "return "+result.nome
+        if result == None:
+            ins = "return"
+        else:
+            ins = "return "+result.nome
         instruction_list.append(ins)
         temp_var.create_label("")
 

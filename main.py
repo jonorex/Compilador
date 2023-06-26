@@ -34,18 +34,19 @@ semantica = Semantical(TOKENS)
 pda.tokenList = TOKENS
 pda.linhas = linhas
 pda.estadoAtual = "q0" 
-a = pda.parser(0)
+a = pda.parser(0, TOKENS, "q0")
 
 #if a != False :
 #    print("erro sintático")
 
 #for t in STM_VECTOR:
 #    print(t)
-
+#print(pda.verifica_pilha())
 if len(erro_semantico) == 0 and lexer:
-    if semantica.parser(linhas):
-        tres_enderecos.clear_list()
-        tres_enderecos.generate(TOKENS)
-        tres_enderecos.print_code()
+    if pda.verifica_pilha():
+        if semantica.parser(linhas):
+            tres_enderecos.clear_list()
+            tres_enderecos.generate(TOKENS)
+            tres_enderecos.print_code()
 
 

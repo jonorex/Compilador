@@ -11,9 +11,9 @@ def gerar_menssagem_erro(tipo, token, linha):
     linha_numerica = token.linha
     coluna = token.coluna
     if token.nome == "":   
-        nome_token = token.nome
-    else:
         nome_token = token.chave
+    else:
+        nome_token = token.nome
     string_error = ""
     titulo = "Erro "+ tipo + " na linha: "+ str(linha_numerica)
     print(titulo)

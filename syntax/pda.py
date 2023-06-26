@@ -12,6 +12,7 @@ sys.path.append('../compiladorPython')
 from consts import *
 from data import ABRE_P, VIRGULA, ABRE_CHAVE, FUN, FECHA_P, IF, FECHA_CHAVE
 import utils.utils as utils
+import copy
 STM_VECTOR = []
 erro_semantico = []
 class Pda:
@@ -27,6 +28,7 @@ class Pda:
         self.tokenList = []
         self.linhas = []
         self.i = 0
+        self.lista_estados =[]
     def verificarTransicao(self, token, transicao):
         campo_analisado = transicao.campo_analisado
         condicao = transicao.condicao
@@ -134,12 +136,40 @@ class Pda:
             else: return False
         else: return False
 
+    def verificar_estados_finais(self):
+        for e in self.estadosFinais:
+            if e == self.estadoAtual:
+                return True
+        if self.estadoAtual == "q49":
+            utils.gerar_menssagem_erro("Ponto vírgula faltando ", self.tokenList[-1], self.linhas[self.tokenList[-1].linha -1 ])
+        else:
+            print("Erro sintático")
+        return False
 
-  
-    def parser(self, i):
-        s = len(self.tokenList)
+    def verifica_pilha(self):
+        #print(self.pilha)
+        if len(self.pilha) > 0 and self.pilha[-1].token == ABRE_CHAVE.token:
+            utils.gerar_menssagem_erro("Abre_chave sem fechamento ", self.pilha[-1], self.linhas[self.pilha[-1].linha -1 ])
+            return False
+        
+        return self.verificar_estados_finais()
+
+    def mod_vetor_tokens(self, positon, i, token, tokenList):
+        if positon == "antes":
+            token_list = copy.copy(tokenList)
+            token_list.insert(i, token)
+            return token_list
+        elif positon == "noLugar":
+            token_list = copy.copy(tokenList)
+            print("linha 164 " + str(len(tokenList)) + " "+str(i))
+            token_list[i] = token
+            return token_list
+            
+
+    def parser(self, i, tokenList, estado_atual):
+        s = len(tokenList)
         j = -1
-        #print(i>= len(self.tokenList))
+        #print(i>= len(tokenList))
         v = True
         tokens_esperados = []
         while i < s:
@@ -149,9 +179,9 @@ class Pda:
                 j+=1
                 if transicao.estado_inicial == self.estadoAtual:
                     tokens_esperados.append(transicao)
-                    if self.verificarTransicao(self.tokenList[i], transicao) == True:
+                    if self.verificarTransicao(tokenList[i], transicao) == True:
                         v = True
-                        #print(self.estadoAtual)
+                        print(self.estadoAtual)
                         if transicao.consumir == True:
                             i = i-1
                         break
@@ -159,29 +189,48 @@ class Pda:
                 break
 
             i = i+1
-        #for p in self.pilha:
-        #    print(p)
+        for p in self.pilha:
+            print(p)
         if v:
             while( len(self.pilha) > 0 and (self.pilha[-1].token == "FUN" or self.pilha[-1].token == "IF" or self.pilha[-1].token == TOKEN_ID.token)):
                 STM_VECTOR.append(self.pilha[-1])
                 self.pilha.pop()
 
         else:
-
+            if len(self.lista_estados) > 0 and self.lista_estados[-1] == self.estadoAtual:
+                print("passou aqui")
+                return False
             for t in tokens_esperados:
-                if t.consumir == False:
-                    self.estadoAtual = t.estado_final
-                #print(len(self.tokenList))
-                if self.parser(i+1):
+                #self.estadoAtual = t.estado_final
+                #print(len(tokenList))
+                #inserir antes
+                #no lugar
+                #depois
+                
+                self.lista_estados.append(self.estadoAtual)
+                token = utils.encontrar_token(t.palavra_chave)
+                a = self.mod_vetor_tokens("antes", i, token, tokenList)
+                print("linha 206 ", self.estadoAtual)
+                print(tokenList)
+                #if (len(self.pilha) > 0 and self.pilha[-1].token == ABRE_CHAVE.token):
+                #    #utils.gerar_menssagem_erro("Abre_chave sem fechamento ", self.pilha[-1], self.linhas[self.pilha[-1].linha -1 ])
+                #    b = self.mod_vetor_tokens("antes", i, FECHA_CHAVE)
+                #    print("linha 216 ",b[i])
+                #    self.parser(i, b)
+                estado_atual = copy.copy(self.estadoAtual)
+                print("linha 219", i)
+                if self.parser(i, a, estado_atual):
                     erro_semantico.append("")
-                    utils.gerar_menssagem_erro_sintatico(self.tokenList[i], t, self.linhas[self.tokenList[i].linha -1])
+                    if t.consumir == False:
+                        utils.gerar_menssagem_erro_sintatico(tokenList[i], t, self.linhas[tokenList[i].linha -1])
                     return True
-            print(i)
-
-            
-                   
-            
-        
+                elif self.parser(i, self.mod_vetor_tokens("noLugar", i, token, tokenList), estado_atual):
+                    erro_semantico.append("")
+                    if t.consumir == False:
+                        utils.gerar_menssagem_erro_sintatico(tokenList[i], t, self.linhas[tokenList[i].linha -1])
+                    return True
+            #print(i)        
+             
         #print("i", s)
 
         if len(self.pilha) == 0 and v:
