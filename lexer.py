@@ -197,26 +197,26 @@ def verificaOpComposto(): #após a análise é verificado se dois operadores que
     s = len(LEXICAL_VECTOR)
     for i in range(s):
         #print(LEXICAL_VECTOR[i])
-        if LEXICAL_VECTOR[i].tipo == OP and (i != s and i != 0):
-            if LEXICAL_VECTOR[i-1].tipo == OP:
+        if (LEXICAL_VECTOR[i].tipo == OP or LEXICAL_VECTOR[i].tipo == OP_ATR) and (i != s and i != 0):
+            if LEXICAL_VECTOR[i-1].tipo == OP or LEXICAL_VECTOR[i-1].tipo == OP_ATR:
                 r = copy.copy(isComposeOperator(LEXICAL_VECTOR[i-1].chave, LEXICAL_VECTOR[i].chave))
                 if r != False:
                     LEXICAL_VECTOR[i-1] = r
                     LEXICAL_VECTOR[i] = TOKEN_NULO
-            elif LEXICAL_VECTOR[i+1].tipo == OP:
+            elif LEXICAL_VECTOR[i+1].tipo == OP or LEXICAL_VECTOR[i+1].tipo == OP_ATR:
                 r = isComposeOperator(LEXICAL_VECTOR[i].chave, LEXICAL_VECTOR[i+1].chave)
                 if r != False:
                     LEXICAL_VECTOR[i] = r
                     LEXICAL_VECTOR[i+1] = TOKEN_NULO
-        elif i == 0 and LEXICAL_VECTOR[i+1].tipo == OP and LEXICAL_VECTOR[i] == OP:
-            if LEXICAL_VECTOR[i+1].tipo == OP:
+        elif i == 0 and (LEXICAL_VECTOR[i+1].tipo == OP or LEXICAL_VECTOR[i+1].tipo == OP_ATR) and (LEXICAL_VECTOR[i] == OP or LEXICAL_VECTOR[i].tipo == OP_ATR):
+            if LEXICAL_VECTOR[i+1].tipo == OP or LEXICAL_VECTOR[i+1].tipo == OP_ATR:
                 r = isComposeOperator(LEXICAL_VECTOR[i].chave, LEXICAL_VECTOR[i+1].chave)
                 if r != False:     
                     LEXICAL_VECTOR[i] = r
                     LEXICAL_VECTOR[i+1] = TOKEN_NULO
-        elif i == s and LEXICAL_VECTOR[i-1].tipo == OP and LEXICAL_VECTOR[i].tipo == OP:
+        elif i == s and (LEXICAL_VECTOR[i-1].tipo == OP or LEXICAL_VECTOR[i-1].tipo == OP_ATR) and (LEXICAL_VECTOR[i].tipo == OP or LEXICAL_VECTOR[i].tipo == OP_ATR):
             
-            if LEXICAL_VECTOR[i-1].tipo == OP:
+            if LEXICAL_VECTOR[i-1].tipo == OP or LEXICAL_VECTOR[i-1].tipo == OP_ATR:
                 r = isComposeOperator(LEXICAL_VECTOR[i-1].chave, LEXICAL_VECTOR[i].chave)
                 if r != False:
                     LEXICAL_VECTOR[i-1] = r
@@ -236,7 +236,7 @@ def verificar_tokens_desnessarios():
             LEXICAL_VECTOR[i].id = j
             TOKENS.append(LEXICAL_VECTOR[i])
             j+=1
-            #print(LEXICAL_VECTOR[i])
+
 
     isLogicOperator()
     

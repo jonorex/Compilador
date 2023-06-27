@@ -5,7 +5,7 @@ import semantical.semantical as semantical
 from semantical.semantical import Semantical
 
 
-arq = open("codigo.txt") 
+arq = open("codigo3.brs") 
 linhas = arq.readlines()
 
 i = 0
@@ -34,7 +34,8 @@ semantica = Semantical(TOKENS)
 pda.tokenList = TOKENS
 pda.linhas = linhas
 pda.estadoAtual = "q0" 
-a = pda.parser(0, TOKENS, "q0")
+if lexer:
+    a = pda.parser(0, TOKENS, "q0")
 
 #if a != False :
 #    print("erro sintático")
@@ -45,8 +46,9 @@ a = pda.parser(0, TOKENS, "q0")
 if len(erro_semantico) == 0 and lexer:
     if pda.verifica_pilha():
         if semantica.parser(linhas):
+            TOKENS = semantica.TOKENS
             tres_enderecos.clear_list()
             tres_enderecos.generate(TOKENS)
-            tres_enderecos.print_code()
+            #tres_enderecos.print_code()
 
 

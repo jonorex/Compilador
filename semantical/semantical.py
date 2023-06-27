@@ -405,7 +405,8 @@ class Semantical:
                 to = dado[0]
                 tres_end = Tres()
                 tres_end.verificar_exp(dado)
-                print_code()
+                #print_code()
+                #print(to)
                 if tres_end.isBool == False:    
                     utils.gerar_menssagem_erro_tipos_incompativeis(identificador, to, linha[to.linha-1])              
                     

@@ -1,5 +1,5 @@
 int b = 3;
-fun main(int a, int b)->int{
+fun soma(int a, int b)->int{
     return a+b;
 }
 fun main()->int{
@@ -7,7 +7,7 @@ fun main()->int{
     int c = 2;
     int b = 2;
     if(a>b){
-        a = main(b, c);
+        a = soma(b, c);
     }
     else if(a>2){
         b= 4*5;

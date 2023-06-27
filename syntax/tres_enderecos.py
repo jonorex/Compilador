@@ -10,7 +10,8 @@ OPERADORES = [ASTERISCO,
               MAIS, 
               MENOS,
               MAIOR, 
-              MENOR, 
+              MENOR,
+              IGUAL_IGUAL, 
               MAIOR_IGUAL, 
               MENOR_IGUAL,
               INVERSOR,
@@ -71,8 +72,8 @@ class Tres:
                     break
         if a == False:
             if len(exp) == 1:
-                if exp[0].tipo_dado != "BOOL":
-                    self.isBool = False
+                #if exp[0].tipo_dado != "BOOL":
+                    #self.isBool = False
                 return exp[0]
             if len(exp) >= 2:
                 if self.vericar_ultimas_posicoes(exp, len(exp)-1):
@@ -103,7 +104,7 @@ class Tres:
                         temp.nome = "t"+str(temp_var.temp_var-1)
                         x = i-1 
                         
-                        if (lista[i-1].tipo_dado == "INT" or lista[i-1].tipo_dado == "FLOAT") and (lista[i-1].tipo_dado == "INT" or lista[i-1].tipo_dado == "FLOAT")  and lista[i].categoria == "math":
+                        if (lista[i-1].tipo_dado == "INT" or lista[i-1].tipo_dado == "FLOAT") and (lista[i+1].tipo_dado == "INT" or lista[i+1].tipo_dado == "FLOAT")  and lista[i].categoria == "math":
                             temp.tipo_dado = "INT"
                         elif (lista[i-1].tipo_dado == "INT" or lista[i-1].tipo_dado == "FLOAT") and (lista[i+1].tipo_dado == "INT" or lista[i+1].tipo_dado == "FLOAT")  and lista[i].categoria == "relacional":
                             temp.tipo_dado = "BOOL"
@@ -253,7 +254,9 @@ class If_stm(Tres):
     def generate_condition(self):
         i = self.if_pos
         i+=1
-        while self.tokens[i].token != FECHA_P.token:
+        fecha_p = buscar_fechaP(self.tokens[i])
+        
+        while self.tokens[i] != fecha_p:
             i+=1
             self.condition.append(self.tokens[i])
         self.condition.pop()
@@ -304,6 +307,14 @@ class If_stm(Tres):
             self.instruction += ins
 
 
+def buscar_fechaP(abreP):
+    i = - 1
+    for t in STM_VECTOR:
+        i+=1
+        if t == abreP:
+            return STM_VECTOR[i+1]
+
+
 class Exp_stm(Tres):
     def __init__(self, exp) -> None:
         super().__init__()
@@ -348,7 +359,6 @@ def generate(tokens):
 
     while i < len(tokens)-1:
         i += 1
-        
         if tokens[i].token == FUN.token: 
             temp_var.create_label(tokens[i+1].nome)
             instruction_list.append("")
@@ -363,7 +373,7 @@ def generate(tokens):
             i = intervalo[1]
             if_stm.generate()
             if_list.append(if_stm)
-        
+
         elif tokens[i].token == RETURN.token:
             i = gernerate_return(i, tokens)
         elif tokens[i].token == WHILE.token:

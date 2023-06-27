@@ -14,7 +14,7 @@ TOKEN_INVALID_ID = Token(chave="", token="IDENTIFICADOR_INVALIDO", tipo="")
 
 DELIMITADOR = "DELIMITADOR"
 OP = "operador"
-OP_ATR = "op_atr"
+OP_ATR = "ATRIB"
 SPACE = "SPACE"
 KEYWORD = "keyWord"
 TIPO = "TIPO"
